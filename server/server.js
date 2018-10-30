@@ -1,6 +1,7 @@
 let express = require('express');
 let bodyParser = require('body-parser');
 
+let { mongoose } = require('./db/mongoose');
 let { Todo } = require('./models/todo');
 let { User } =require('./models/users');
 
@@ -26,33 +27,37 @@ app.listen(3000, () => {
 })
 
 
-let newTodo = new Todo({
-    text: 'Cook dinner'
-});
+// let newTodo = new Todo({
+//     text: 'Cook dinner'
+// });
 
-newTodo.save().then((doc) => {
-    console.log('Saved Todo', doc);
-}, (err) => {
-    console.log('Unable to save todo', err);
-});
+// newTodo.save().then((doc) => {
+//     console.log('Saved Todo', doc);
+// }, (err) => {
+//     console.log('Unable to save todo', err);
+// });
 
-let nextTodo = new Todo({
-    text: ' Edit this video ',
-});
+// let nextTodo = new Todo({
+//     text: ' Edit this video ',
+// });
 
-nextTodo.save().then((doc) => {
-    console.log('Saved Todo', doc);
-}, (err) => {
-    console.log('Unable to save todo', err);
-});
+// nextTodo.save().then((doc) => {
+//     console.log('Saved Todo', doc);
+// }, (err) => {
+//     console.log('Unable to save todo', err);
+// });
 
-let newUser = new User({
-    user: ' Shruti ',
-    email: 'shruti.sheoran@gmail.com  '
-});
+// let newUser = new User({
+//     user: ' Shruti ',
+//     email: 'shruti.sheoran@gmail.com  '
+// });
 
-newUser.save().then((doc) => {
-    console.log('Saved User', doc);
-}, (err) => {
-    console.log('Unable to save user', err);
-});
+// newUser.save().then((doc) => {
+//     console.log('Saved User', doc);
+// }, (err) => {
+//     console.log('Unable to save user', err);
+// });
+
+module.exports = {
+    app,
+};
