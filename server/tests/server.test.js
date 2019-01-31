@@ -75,24 +75,57 @@ describe('GET /todos', () => {
 describe('GET /todos/:id', () => {
     it('should create a new todo', (done) => {
         request(app)
-        .get(`/todo/${todos[0]._id.toHexString()}`)
-        .expect(200)
-        .expect((res) => {
-            expect(res.body.todo.text).toBe(todos[0].text);
-        })
-        .end(done);
+            .get(`/todo/${todos[0]._id.toHexString()}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe(todos[0].text);
+            })
+            .end(done);
     });
     it('should return 404 if todo not found', (done) => {
         let id = new ObjectID();
         request(app)
-        .get(`todo/${id.toHexString()}`)
-        .expect(404)
-        .end(done);
+            .get(`todo/${id.toHexString()}`)
+            .expect(404)
+            .end(done);
     });
     it('should return 404 if todo id is invalid', (done) => {
         request(app)
-        .get('/todo/124')
-        .expect(404)
-        .end(done);
+            .get('/todo/124')
+            .expect(404)
+            .end(done);
+    });
+});
+
+describe('DELETE /todo/:id', () => {
+    it('should remove a todo', (done) => {
+        let id = todos[1]._id.toHexString();
+        request(app)
+            .delete(`/todo/${id}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo._id).toBe(id);
+            })
+            .end((err, res) => {
+                if(err)
+                    return done(err);
+                Todo.findById(id).then((todo) => {
+                    expect(todo).toNotExist();
+                    done();
+                }).catch((e) => done(e));
+            });
+    });
+    it('should return 404 if todo not found', (done) => {
+        let id = new ObjectID().toHexString();
+        request(app)
+            .delete(`/todo/${id}`)
+            .expect(404)
+            .end(done);
+    });
+    it('should return 404 if object id is invalid', (done) => {
+        request(app)
+            .delete(`/todo/123abc`)
+            .expect(404)
+            .end(done);
     });
 });
