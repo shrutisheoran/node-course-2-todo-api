@@ -1,5 +1,6 @@
 let express = require('express');
 let bodyParser = require('body-parser');
+const { ObjectID } = require('mongodb');
 
 let { mongoose } = require('./db/mongoose');
 let { Todo } = require('./models/todo');
@@ -27,44 +28,27 @@ app.get('/todos', (req, res) => {
     }, (e) => {
         res.status(400).send(e);
     });
-})
+});
 
-app.listen(3000, () => {
-    console.log('Started on port 3000');
-})
+app.get('/todo/:id', (req, res) => {
+    let id = req.params.id;
+    if(!ObjectID.isValid(id))
+        return res.status(404).send();
+    Todo.findById(id).then((todo) => {
+        if(!todo)
+            return res.status(404).send();
+        res.send({todo});
+    }).catch((e) => {
+        res.status(400).send();
+    })
+});
 
-
-// let newTodo = new Todo({
-//     text: 'Cook dinner'
-// });
-
-// newTodo.save().then((doc) => {
-//     console.log('Saved Todo', doc);
-// }, (err) => {
-//     console.log('Unable to save todo', err);
-// });
-
-// let nextTodo = new Todo({
-//     text: ' Edit this video ',
-// });
-
-// nextTodo.save().then((doc) => {
-//     console.log('Saved Todo', doc);
-// }, (err) => {
-//     console.log('Unable to save todo', err);
-// });
-
-// let newUser = new User({
-//     user: ' Shruti ',
-//     email: 'shruti.sheoran@gmail.com  '
-// });
-
-// newUser.save().then((doc) => {
-//     console.log('Saved User', doc);
-// }, (err) => {
-//     console.log('Unable to save user', err);
-// });
+if(!module.parent) {
+    app.listen(3000, () => {
+        console.log('Started on port 3000');
+    });
+}
 
 module.exports = {
-    app,
+    app
 };
